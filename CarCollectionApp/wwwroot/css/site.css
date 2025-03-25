@@ -1,0 +1,42 @@
+
+.card-img-top {
+    width: 100%;
+    height: 300px; 
+    object-fit: cover;
+}
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 90%; 
+}
+
+.section {
+    text-align: right;
+}
+
+.reviews-section {
+    margin-top: 50px;
+    padding: 20px;
+}
+
+.navbar-nav {
+    margin-left: auto;
+}
+
+#reviews .card {
+    transition: 0.3s;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+
+    #reviews .card:hover {
+        transform: scale(1.03);
+    }
+
+#assistance {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}

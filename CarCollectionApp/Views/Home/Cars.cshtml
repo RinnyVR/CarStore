@@ -1,0 +1,31 @@
+﻿<h2 class="text-center my-4">Our Car Collection</h2>
+
+<div class="container">
+    <div class="row">
+        @foreach (var car in new Dictionary<string, string>
+        {
+        { "bmw-m4", "BMW M4" },
+        { "audi-r8", "Audi R8" },
+        { "corvette-c8", "Corvette C8" },
+        { "ferrari-f8", "Ferrari F8" },
+        { "lamborghini-huracan", "Lamborghini Huracan" },
+        { "mclaren-720s", "McLaren 720S" },
+        { "mercedes-amg-gt", "Mercedes-AMG GT" },
+        { "mustang-gt", "Ford Mustang GT" },
+        { "porsche-911", "Porsche 911" },
+        { "tesla-model-s", "Tesla Model S" }
+        })
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <img src="~/images/@(car.Key).jpg" class="card-img-top img-fluid" style="height: 300px; object-fit: cover;" alt="@car.Value">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@car.Value</h5>
+                        <p class="card-text">Explore the power, luxury, and technology of the @car.Value.</p>
+                        <a href="@Url.Action("CarDetails", "Home", new { car = car.Key })" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
