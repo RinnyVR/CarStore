@@ -9,11 +9,11 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts(); // Enable HTTP Strict Transport Security (HSTS)
+    app.UseHsts(); // Enforce HTTPS in production
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // Serve static files (CSS, JS, images)
+app.UseStaticFiles(); // Serve static files from wwwroot
 app.UseRouting();
 app.UseAuthorization();
 
