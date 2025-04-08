@@ -11,4 +11,8 @@
     <Folder Include="wwwroot\videos\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Scalar.AspNetCore" Version="2.1.7" />
+  </ItemGroup>
+
 </Project>
