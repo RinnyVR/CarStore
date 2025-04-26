@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Reserve Car";
+    var carName = ViewBag.CarName as string;
+}
+
+<h2 class="text-center my-4">Reserve @carName</h2>
+
+<div class="container">
+    <form method="post" asp-action="Reserve">
+        <input type="hidden" name="carName" value="@carName" />
+
+        <div class="mb-3">
+            <label for="location" class="form-label">Pick-Up Location</label>
+            <select class="form-select" name="location" required>
+                <option selected disabled>Select location</option>
+                <option value="DTLA">Downtown LA</option>
+                <option value="LAX">LAX Airport</option>
+                <option value="SantaMonica">Santa Monica</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="pickup" class="form-label">Pick-Up Date</label>
+            <input type="date" class="form-control" name="pickup" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="dropoff" class="form-label">Drop-Off Date</label>
+            <input type="date" class="form-control" name="dropoff" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="userNotes" class="form-label">Additional Notes (optional)</label>
+            <textarea class="form-control" name="userNotes" rows="2" placeholder="Special requests, preferred color, etc."></textarea>
+        </div>
+
+        <div class="alert alert-info mt-4 d-none" id="pricePreview">
+            <strong>Estimated Price:</strong> <span id="priceText">—</span>
+            <br />
+            <small><em id="discountNote"></em></small>
+        </div>
+
+        <button type="submit" class="btn btn-success">Confirm Reservation</button>
+    </form>
+</div>
+
+@if (ViewBag.Message != null)
+{
+    <script>
+        window.onload = () => new bootstrap.Modal(document.getElementById('successModal')).show();
+    </script>
+}
+
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Reservation Confirmed ✅</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>@ViewBag.Message</p>
+                @if (ViewBag.DiscountReasons != null)
+                {
+                    <p><strong>Discounts:</strong> @ViewBag.DiscountReasons</p>
+                }
+                @if (ViewBag.FinalPrice != null)
+                {
+                    <p><strong>Final Price:</strong> €@String.Format("{0:N0}", ViewBag.FinalPrice)</p>
+                }
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const carRates = {
+            "BMW M4": 150, "Audi R8": 200, "Corvette C8": 170,
+            "Ferrari F8": 300, "Lamborghini Huracan": 290, "McLaren 720S": 310,
+            "Mercedes-AMG GT": 220, "Ford Mustang GT": 120,
+            "Porsche 911": 180, "Tesla Model S": 200
+        };
+
+        function updatePricePreview() {
+            const pickup = new Date(document.querySelector('input[name="pickup"]').value);
+            const dropoff = new Date(document.querySelector('input[name="dropoff"]').value);
+            const carName = "@carName";
+            const priceBox = document.getElementById("pricePreview");
+            const priceText = document.getElementById("priceText");
+            const discountNote = document.getElementById("discountNote");
+
+            if (!pickup || !dropoff || isNaN(pickup) || isNaN(dropoff) || dropoff <= pickup) {
+                priceBox.classList.add("d-none");
+                return;
+            }
+
+            const dayCount = Math.round((dropoff - pickup) / (1000 * 60 * 60 * 24));
+            const rate = carRates[carName] || 150;
+            let baseTotal = dayCount * rate;
+            let discount = 0;
+            let notes = [];
+
+            if (pickup.getMonth() === 11) {
+                discount += 0.15;
+                notes.push("15% Holiday Discount");
+            }
+
+            if (dayCount >= 7) {
+                discount += 0.10;
+                notes.push("10% Long-Term Rental");
+            }
+
+            const finalPrice = baseTotal * (1 - discount);
+            priceText.innerText = `€${finalPrice.toFixed(2)} for ${dayCount} day(s)`;
+            discountNote.innerText = notes.length ? `Includes: ${notes.join(" + ")}` : "No discounts applied.";
+            priceBox.classList.remove("d-none");
+        }
+
+        document.querySelector('input[name="pickup"]').addEventListener("change", updatePricePreview);
+        document.querySelector('input[name="dropoff"]').addEventListener("change", updatePricePreview);
+    </script>
+}

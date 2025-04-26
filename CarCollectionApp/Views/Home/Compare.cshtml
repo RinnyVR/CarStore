@@ -4,6 +4,7 @@
 
 <h2 class="text-center my-4">Compare Cars</h2>
 
+<!-- Original Static Comparison Table -->
 <table class="table table-bordered text-center">
     <thead>
         <tr>
@@ -75,3 +76,89 @@
         </tr>
     </tbody>
 </table>
+
+<!-- Interactive Comparison Section -->
+<hr />
+<h3 class="text-center my-4">Interactive Comparison</h3>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <select class="form-select" id="car1" onchange="compareCars()">
+            <option disabled selected>Select First Car</option>
+            @foreach (var car in new[] { "BMW M4", "Audi R8", "Corvette C8", "Ferrari F8", "Lamborghini Huracan", "McLaren 720S", "Mercedes-AMG GT", "Ford Mustang GT", "Porsche 911", "Tesla Model S" })
+            {
+                <option value="@car">@car</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-6">
+        <select class="form-select" id="car2" onchange="compareCars()">
+            <option disabled selected>Select Second Car</option>
+            @foreach (var car in new[] { "BMW M4", "Audi R8", "Corvette C8", "Ferrari F8", "Lamborghini Huracan", "McLaren 720S", "Mercedes-AMG GT", "Ford Mustang GT", "Porsche 911", "Tesla Model S" })
+            {
+                <option value="@car">@car</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div class="row" id="comparisonContainer"></div>
+
+@section Scripts {
+    <script>
+        const carData = {
+            "BMW M4": { image: "/images/bmw-m4.jpg", engine: "3.0L Twin-Turbo Inline-6", horsepower: 503, torque: "479 lb-ft", topSpeed: "180 mph", price: 85000 },
+            "Audi R8": { image: "/images/audi-r8.jpg", engine: "5.2L V10", horsepower: 562, torque: "406 lb-ft", topSpeed: "205 mph", price: 145000 },
+            "Corvette C8": { image: "/images/corvette-c8.jpg", engine: "6.2L V8", horsepower: 495, torque: "470 lb-ft", topSpeed: "194 mph", price: 67000 },
+            "Ferrari F8": { image: "/images/ferrari-f8.jpg", engine: "3.9L Twin-Turbo V8", horsepower: 710, torque: "568 lb-ft", topSpeed: "211 mph", price: 276000 },
+            "Lamborghini Huracan": { image: "/images/lamborghini-huracan.jpg", engine: "5.2L V10", horsepower: 631, torque: "443 lb-ft", topSpeed: "202 mph", price: 261000 },
+            "McLaren 720S": { image: "/images/mclaren-720s.jpg", engine: "4.0L Twin-Turbo V8", horsepower: 710, torque: "568 lb-ft", topSpeed: "212 mph", price: 299000 },
+            "Mercedes-AMG GT": { image: "/images/mercedes-amg-gt.jpg", engine: "4.0L V8 Biturbo", horsepower: 523, torque: "494 lb-ft", topSpeed: "194 mph", price: 118000 },
+            "Ford Mustang GT": { image: "/images/mustang-gt.jpg", engine: "5.0L V8", horsepower: 450, torque: "410 lb-ft", topSpeed: "155 mph", price: 55000 },
+            "Porsche 911": { image: "/images/porsche-911.jpg", engine: "3.0L Twin-Turbo Flat-6", horsepower: 443, torque: "390 lb-ft", topSpeed: "191 mph", price: 110000 },
+            "Tesla Model S": { image: "/images/tesla-model-s.jpg", engine: "Dual Motor Electric", horsepower: 1020, torque: "1050 lb-ft", topSpeed: "200 mph", price: 104000 }
+        };
+
+                 function getPerformanceRating(hp, price) {
+            const ratio = hp / price;
+            if (ratio > 0.008) return { text: "Extreme Performance", badge: "danger" };
+            if (ratio > 0.006) return { text: "High Performance", badge: "success" };
+            return { text: "Standard Performance", badge: "warning" };
+        }
+
+
+
+        function compareCars() {
+            const car1 = document.getElementById("car1").value;
+            const car2 = document.getElementById("car2").value;
+            if (!car1 || !car2 || car1 === car2) return;
+
+            const c1 = carData[car1];
+            const c2 = carData[car2];
+
+            const perf1 = getPerformanceRating(c1.horsepower, c1.price);
+            const perf2 = getPerformanceRating(c2.horsepower, c2.price);
+
+            document.getElementById("comparisonContainer").innerHTML = `
+                <div class="col-md-6 text-center">
+                    <img src="${c1.image}" class="img-fluid mb-2" style="max-height: 200px;">
+                    <h4>${car1}</h4>
+                    <p><strong>Engine:</strong> ${c1.engine}</p>
+                    <p><strong>Horsepower:</strong> ${c1.horsepower} HP</p>
+                    <p><strong>Torque:</strong> ${c1.torque}</p>
+                    <p><strong>Top Speed:</strong> ${c1.topSpeed}</p>
+                    <p><strong>Performance Rating:</strong> <span class="badge bg-${perf1.badge}">${perf1.text}</span></p>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img src="${c2.image}" class="img-fluid mb-2" style="max-height: 200px;">
+                    <h4>${car2}</h4>
+                    <p><strong>Engine:</strong> ${c2.engine}</p>
+                    <p><strong>Horsepower:</strong> ${c2.horsepower} HP</p>
+                    <p><strong>Torque:</strong> ${c2.torque}</p>
+                    <p><strong>Top Speed:</strong> ${c2.topSpeed}</p>
+                    <p><strong>Performance Rating:</strong> <span class="badge bg-${perf2.badge}">${perf2.text}</span></p>
+                </div>
+            `;
+        }
+    </script>
+}

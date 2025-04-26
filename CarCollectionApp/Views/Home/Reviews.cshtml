@@ -1,18 +1,87 @@
-﻿<div class="reviews-container">
-    <div class="review-card">
-        <strong>John Smith</strong>
-        <p>"The best experience for buying luxury cars!"</p>
+﻿@model IEnumerable<CarCollectionApp.Models.ReviewModel>
+
+@{
+    ViewData["Title"] = "Customer Reviews";
+}
+
+<section class="container my-5">
+    <h2 class="text-center mb-4">Customer Reviews</h2>
+
+    <div class="row justify-content-center">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var review in Model
+            .OrderByDescending(r => r.Rating)
+            .ThenByDescending(r => r.Timestamp)
+            .Take(6))
+            {
+                <div class="col-md-5 m-3">
+                    <div class="card shadow-sm border-0 hover-shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@review.Name</h5>
+
+                            <!-- ⭐ Star Rating -->
+                            <p>
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= review.Rating)
+                                    {
+                                        <span class="text-warning">&#9733;</span> 
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">&#9734;</span> 
+                                    }
+                                }
+                            </p>
+
+                            <p class="card-text">@review.ReviewText</p>
+
+                            <!-- ⏱ Date and 👍 Helpful count -->
+                            <small class="text-muted">
+                                Posted on @review.Timestamp.ToString("MMMM dd, yyyy")
+                                <br />
+                                <i class="bi bi-hand-thumbs-up"></i> @review.HelpfulCount people found this helpful
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-center">No reviews available at the moment.</p>
+        }
     </div>
-    <div class="review-card">
-        <strong>Emily Johnson</strong>
-        <p>"The website is incredibly easy to use."</p>
-    </div>
-    <div class="review-card">
-        <strong>Michael Brown</strong>
-        <p>"The car collection is simply outstanding!"</p>
-    </div>
-    <div class="review-card">
-        <strong>Sarah Williams</strong>
-        <p>"Fast and reliable service."</p>
-    </div>
-</div>
+</section>
+
+<!-- Optional Review Submission Form -->
+<section class="container my-5">
+    <h4 class="text-center mb-3">Leave a Review</h4>
+    <form method="post" asp-action="SubmitReview" class="w-75 mx-auto">
+        <div class="mb-3">
+            <input name="Name" class="form-control" placeholder="Your Name" required />
+        </div>
+        <div class="mb-3">
+            <textarea name="ReviewText" class="form-control" rows="3" placeholder="Your Review" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="Rating" class="form-label">Rating</label>
+            <select name="Rating" class="form-select" required>
+                <option disabled selected>Select Rating</option>
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <option value="@i">@i Star@(i > 1 ? "s" : "")</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+</section>
+
+<style>
+    .hover-shadow:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+        transition: 0.3s ease;
+    }
+</style>
