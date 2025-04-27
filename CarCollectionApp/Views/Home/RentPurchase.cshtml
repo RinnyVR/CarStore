@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Rent & Purchase Options";
+    var pricing = (Dictionary<string, (int RentalPerDay, int PurchasePrice)>)ViewBag.Pricing;
+    var cars = (Dictionary<string, CarCollectionApp.Models.CarModel>)ViewBag.Cars;
+}
+
+<h2 class="text-center my-4">Rent & Purchase Options</h2>
+
+<div class="container">
+    <div class="row">
+        @foreach (var car in cars)
+        {
+            var carName = car.Value.Name;
+            var price = pricing.ContainsKey(carName) ? pricing[carName] : (0, 0);
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="row no-gutters">
+                        <div class="col-md-5">
+                            <img src="~/images/@car.Value.Image" class="img-fluid" alt="@carName">
+                        </div>
+                        <div class="col-md-7 p-3">
+                            <h5>@carName</h5>
+                            <p><strong>Rental:</strong> €@price.Item1/day</p>
+                            <p><strong>Purchase:</strong> €@string.Format("{0:N0}", price.Item2)</p>
+                            <!-- Optional Add-ons -->
+                            <p><small class="text-muted">Pricing may vary by location and rental duration</small></p>
+                            <a asp-action="Reserve" asp-controller="Home" asp-route-carName="@carName" class="btn btn-primary btn-sm mt-2">Reserve Now</a>
+                           
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

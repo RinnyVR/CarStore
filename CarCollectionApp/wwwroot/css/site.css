@@ -1,42 +1,225 @@
-
-.card-img-top {
-    width: 100%;
-    height: 300px; 
-    object-fit: cover;
+/* ================== THEME VARIABLES ================== */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --card-bg: #f8f9fa;
+    --card-hover: #e2e6ea;
+    --section-bg: #f0f0f0;
+    --navbar-bg: #f8f9fa;
+    --navbar-text: #000000;
+    --link-color: #007bff;
+    --link-hover: #0056b3;
+    --table-bg: #ffffff;
+    --table-text: #000000;
+    --footer-bg: #f1f1f1;
 }
+
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --card-bg: #1e1e1e;
+    --card-hover: #2c2c2c;
+    --section-bg: #2b2b2b;
+    --navbar-bg: #1c1c1c;
+    --navbar-text: #ffffff;
+    --link-color: #66b2ff;
+    --link-hover: #99ccff;
+    --table-bg: #1e1e1e;
+    --table-text: #e0e0e0;
+    --footer-bg: #1a1a1a;
+}
+
+/* ================== GENERAL ================== */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    a:hover {
+        color: var(--link-hover);
+        text-decoration: underline;
+    }
 
 .container {
     margin-left: auto;
     margin-right: auto;
-    max-width: 90%; 
+    max-width: 90%;
 }
 
 .section {
     text-align: right;
 }
 
-.reviews-section {
-    margin-top: 50px;
-    padding: 20px;
+/* ================== NAVBAR ================== */
+.navbar {
+    background-color: var(--navbar-bg) !important;
 }
 
-.navbar-nav {
-    margin-left: auto;
+    .navbar .nav-link {
+        color: var(--navbar-text) !important;
+        transition: color 0.3s;
+    }
+
+        .navbar .nav-link:hover {
+            color: var(--text-color) !important;
+        }
+
+/* ================== CARD STYLING ================== */
+.card-img-top {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
 }
 
-#reviews .card {
-    transition: 0.3s;
-    border-radius: 10px;
-    background-color: #f8f9fa;
+.card {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: none;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-    #reviews .card:hover {
+    .card:hover {
+        background-color: var(--card-hover);
         transform: scale(1.03);
     }
 
+/* ================== ASSISTANCE BOX ================== */
 #assistance {
-    background-color: #f0f0f0;
+    background-color: var(--section-bg);
     padding: 20px;
     border-radius: 8px;
     margin-top: 20px;
+}
+
+/* ================== TABLE STYLING ================== */
+table {
+    background-color: var(--table-bg);
+    color: var(--table-text);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.table th,
+.table td {
+    border-color: #444;
+    color: var(--table-text);
+}
+
+    .table td a,
+    .table th a {
+        color: var(--link-color);
+        font-weight: 500;
+    }
+
+        .table td a:hover,
+        .table th a:hover {
+            color: var(--link-hover);
+            text-decoration: underline;
+        }
+
+/* ================== FOOTER ================== */
+footer {
+    background-color: var(--footer-bg);
+    color: var(--text-color);
+    padding: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    footer a {
+        color: var(--link-color);
+        text-decoration: none;
+    }
+
+        footer a:hover {
+            color: var(--link-hover);
+            text-decoration: underline;
+        }
+
+/* ================== BUTTON TOGGLE ================== */
+#theme-toggle {
+    margin-left: 10px;
+    border: none;
+}
+
+/* ================== FORM ELEMENTS ================== */
+input,
+textarea {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid #ccc;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+    input:focus,
+    textarea:focus {
+        border-color: var(--link-color);
+        outline: none;
+    }
+
+.btn-primary {
+    background-color: var(--link-color);
+    border-color: var(--link-color);
+}
+
+    .btn-primary:hover {
+        background-color: var(--link-hover);
+        border-color: var(--link-hover);
+    }
+
+/* ================== DARK THEME DROPDOWNS ================== */
+[data-theme="dark"] select {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid #444;
+}
+
+select {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dropdown background for dark theme */
+[data-theme="dark"] .dropdown-menu {
+    background-color: #222;
+    border-color: #444;
+}
+
+    /* Dropdown item styling in dark mode */
+    [data-theme="dark"] .dropdown-menu .dropdown-item {
+        color: #f1f1f1;
+    }
+
+        [data-theme="dark"] .dropdown-menu .dropdown-item:hover,
+        [data-theme="dark"] .dropdown-menu .dropdown-item:focus {
+            background-color: #333;
+            color: #00b7ff;
+        }
+
+[data-theme="dark"] .dropdown-menu {
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+form.form-inline input,
+form.form-inline select {
+    min-width: 200px;
+}
+
+form.form-inline .btn {
+    min-width: 100px;
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: black;
 }

@@ -5,22 +5,37 @@
 
     var cars = new Dictionary<string, dynamic>
     {
-        { "bmw-m4", new { Name = "BMW M4", Engine = "3.0L Twin-Turbo Inline-6", HP = "503 HP", Torque = "479 lb-ft", Speed = "180 mph", Image = "bmw-m4.jpg" }},
-        { "audi-r8", new { Name = "Audi R8", Engine = "5.2L V10", HP = "562 HP", Torque = "406 lb-ft", Speed = "205 mph", Image = "audi-r8.jpg" }},
-        { "corvette-c8", new { Name = "Corvette C8", Engine = "6.2L V8", HP = "495 HP", Torque = "470 lb-ft", Speed = "194 mph", Image = "corvette-c8.jpg" }},
-        { "ferrari-f8", new { Name = "Ferrari F8", Engine = "3.9L Twin-Turbo V8", HP = "710 HP", Torque = "568 lb-ft", Speed = "211 mph", Image = "ferrari-f8.jpg" }},
-        { "lamborghini-huracan", new { Name = "Lamborghini Huracan", Engine = "5.2L V10", HP = "630 HP", Torque = "443 lb-ft", Speed = "202 mph", Image = "lamborghini-huracan.jpg" }},
-        { "mclaren-720s", new { Name = "McLaren 720S", Engine = "4.0L Twin-Turbo V8", HP = "710 HP", Torque = "568 lb-ft", Speed = "212 mph", Image = "mclaren-720s.jpg" }},
-        { "mercedes-amg-gt", new { Name = "Mercedes-AMG GT", Engine = "4.0L Twin-Turbo V8", HP = "523 HP", Torque = "494 lb-ft", Speed = "194 mph", Image = "mercedes-amg-gt.jpg" }},
-        { "mustang-gt", new { Name = "Ford Mustang GT", Engine = "5.0L V8", HP = "450 HP", Torque = "410 lb-ft", Speed = "155 mph", Image = "mustang-gt.jpg" }},
-        { "porsche-911", new { Name = "Porsche 911", Engine = "3.0L Twin-Turbo Flat-6", HP = "443 HP", Torque = "390 lb-ft", Speed = "182 mph", Image = "porsche-911.jpg" }},
-        { "tesla-model-s", new { Name = "Tesla Model S", Engine = "Dual Electric Motors", HP = "1020 HP", Torque = "1050 lb-ft", Speed = "200 mph", Image = "tesla-model-s.jpg" }}
+        { "bmw-m4", new { Name = "BMW M4", Engine = "3.0L Twin-Turbo Inline-6", HP = 503, Price = 85000m, Torque = "479 lb-ft", Speed = "180 mph", Image = "bmw-m4.jpg" }},
+        { "audi-r8", new { Name = "Audi R8", Engine = "5.2L V10", HP = 562, Price = 145000m, Torque = "406 lb-ft", Speed = "205 mph", Image = "audi-r8.jpg" }},
+        { "corvette-c8", new { Name = "Corvette C8", Engine = "6.2L V8", HP = 495, Price = 67000m, Torque = "470 lb-ft", Speed = "194 mph", Image = "corvette-c8.jpg" }},
+        { "ferrari-f8", new { Name = "Ferrari F8", Engine = "3.9L Twin-Turbo V8", HP = 710, Price = 276000m, Torque = "568 lb-ft", Speed = "211 mph", Image = "ferrari-f8.jpg" }},
+        { "lamborghini-huracan", new { Name = "Lamborghini Huracan", Engine = "5.2L V10", HP = 630, Price = 261000m, Torque = "443 lb-ft", Speed = "202 mph", Image = "lamborghini-huracan.jpg" }},
+        { "mclaren-720s", new { Name = "McLaren 720S", Engine = "4.0L Twin-Turbo V8", HP = 710, Price = 299000m, Torque = "568 lb-ft", Speed = "212 mph", Image = "mclaren-720s.jpg" }},
+        { "mercedes-amg-gt", new { Name = "Mercedes-AMG GT", Engine = "4.0L Twin-Turbo V8", HP = 523, Price = 118000m, Torque = "494 lb-ft", Speed = "194 mph", Image = "mercedes-amg-gt.jpg" }},
+        { "mustang-gt", new { Name = "Ford Mustang GT", Engine = "5.0L V8", HP = 450, Price = 55000m, Torque = "410 lb-ft", Speed = "155 mph", Image = "mustang-gt.jpg" }},
+        { "porsche-911", new { Name = "Porsche 911", Engine = "3.0L Twin-Turbo Flat-6", HP = 443, Price = 110000m, Torque = "390 lb-ft", Speed = "182 mph", Image = "porsche-911.jpg" }},
+        { "tesla-model-s", new { Name = "Tesla Model S", Engine = "Dual Electric Motors", HP = 1020, Price = 104000m, Torque = "1050 lb-ft", Speed = "200 mph", Image = "tesla-model-s.jpg" }}
     };
+
+    string GetPerformanceBadge(double hp, decimal price)
+    {
+        if (price <= 0) return "<span class='badge badge-secondary'>Invalid</span>";
+
+        double ratio = hp / (double)price;
+
+        if (ratio > 0.008)
+            return "<span class='badge badge-danger'>Extreme Performance</span>";
+        else if (ratio > 0.005)
+            return "<span class='badge badge-success'>High Performance</span>";
+        else
+            return "<span class='badge badge-warning'>Standard Performance</span>";
+    }
 }
 
 @if (cars.ContainsKey(car))
 {
     var selectedCar = cars[car];
+    var performanceHtml = GetPerformanceBadge(selectedCar.HP, selectedCar.Price);
 
     <h2 class="text-center my-4">@selectedCar.Name</h2>
 
@@ -31,10 +46,11 @@
             </div>
             <div class="col-md-6">
                 <p><strong>Engine:</strong> @selectedCar.Engine</p>
-                <p><strong>Horsepower:</strong> @selectedCar.HP</p>
+                <p><strong>Horsepower:</strong> @selectedCar.HP HP</p>
                 <p><strong>Torque:</strong> @selectedCar.Torque</p>
                 <p><strong>Top Speed:</strong> @selectedCar.Speed</p>
-                <a href="@Url.Action("Cars", "Home")" class="btn btn-secondary">Back to Cars</a>
+                <p><strong>Performance Rating:</strong> @Html.Raw(performanceHtml)</p>
+                <a href="@Url.Action("Cars", "Home")" class="btn btn-secondary mt-3">Back to Cars</a>
             </div>
         </div>
     </div>

@@ -1,0 +1,94 @@
+﻿@model IEnumerable<CarCollectionApp.Models.ReservationModel>
+
+@{
+    ViewData["Title"] = "All Reservations";
+}
+
+<h2 class="text-center my-4">Reservations</h2>
+
+@if (TempData["Toast"] != null)
+{
+    <div class="alert alert-success text-center">@TempData["Toast"]</div>
+}
+
+@if (!Model.Any())
+{
+    <p class="text-center text-muted">No reservations found yet.</p>
+}
+else
+{
+    <form method="get" asp-action="Reservations" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by car name or location..." />
+        </div>
+        <div class="col-md-3">
+            <select name="sort" class="form-select">
+                <option value="">Sort by</option>
+                <option value="pickup" selected="@(ViewBag.Sort == "pickup")">Pick-Up Date</option>
+                <option value="price" selected="@(ViewBag.Sort == "price")">Price</option>
+            </select>
+        </div>
+        <div class="col-md-auto">
+            <button class="btn btn-outline-primary">Apply</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="text-center">
+            <tr>
+                <th>Car</th>
+                <th>Location</th>
+                <th>Pick-Up</th>
+                <th>Drop-Off</th>
+                <th>Days</th>
+                <th>Price</th>
+                <th>Discounts</th>
+                <th>Reserved On</th>
+                <th>User Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr class="text-center">
+                    <form asp-action="EditReservation" method="post">
+                        <input type="hidden" name="timestamp" value="@r.Timestamp.Ticks" />
+                    <td>@r.CarName</td>
+                    <td>
+                        <select name="location" class="form-select form-select-sm">
+                            <option value="DTLA" selected="@(r.Location == "DTLA")">Downtown LA</option>
+                            <option value="LAX" selected="@(r.Location == "LAX")">LAX Airport</option>
+                            <option value="SantaMonica" selected="@(r.Location == "SantaMonica")">Santa Monica</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="date" name="pickup" class="form-control form-control-sm" value="@r.PickupDate.ToString("yyyy-MM-dd")" />
+                    </td>
+                    <td>
+                        <input type="date" name="dropoff" class="form-control form-control-sm" value="@r.DropoffDate.ToString("yyyy-MM-dd")" />
+                    </td>
+                    <td>@r.RentalDays day(s)</td>
+                    <td>€@String.Format("{0:N0}", r.FinalPrice)</td>
+                    <td>@r.DiscountsApplied</td>
+                    <td>@r.Timestamp.ToString("g")</td>
+                    <td>
+                        <input type="text" name="userNotes" class="form-control form-control-sm" value="@r.UserNotes" />
+                    </td>
+                    <td class="text-nowrap d-flex gap-2 justify-content-center">
+                        <button type="submit" class="btn btn-sm btn-warning">Save</button>
+                    </td>
+                    </form>
+                </tr>
+                <tr class="text-center bg-light">
+                    <td colspan="10">
+                        <form asp-action="CancelReservation" method="post" onsubmit="return confirm('Cancel this reservation?');" class="d-inline-block">
+                            <input type="hidden" name="timestamp" value="@r.Timestamp.Ticks" />
+                            <button type="submit" class="btn btn-sm btn-danger">Cancel Reservation</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
