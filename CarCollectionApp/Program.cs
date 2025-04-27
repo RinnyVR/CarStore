@@ -1,7 +1,22 @@
+using CarCollectionApp.Services;
+using Microsoft.EntityFrameworkCore; // Add this
+using CarCollectionApp.Models; // Add this
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ICarStatsService, CarStatsService>();
+builder.Services.AddDbContext<CarCollectionContext>(options => 
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOption => sqlOption.EnableRetryOnFailure(
+            5, 
+            TimeSpan.FromSeconds(10),
+            null
+            )
+        )
+    );
 
 var app = builder.Build();
 
