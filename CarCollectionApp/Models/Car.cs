@@ -33,6 +33,7 @@ namespace CarCollectionApp.Models
         public int DealerId { get; set; }
         public Dealer Dealer { get; set; }
 
+
         public ICollection<Review>? Reviews { get; set; }
     }
 }

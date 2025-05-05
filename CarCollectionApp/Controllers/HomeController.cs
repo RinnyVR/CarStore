@@ -10,6 +10,7 @@ namespace CarCollectionApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ICarStatsService _carStatsService;
+        private readonly IReservationService _reservationService;
 
         private static readonly List<ReviewModel> _reviews = new List<ReviewModel>
         {
@@ -21,28 +22,11 @@ namespace CarCollectionApp.Controllers
             new ReviewModel { Name = "Sophia Chen", ReviewText = "Very user-friendly and sleek design.", Rating = 4, Timestamp = DateTime.Now.AddDays(-6), HelpfulCount = 8 }
         };
 
-        private static readonly string ReservationFilePath = "Data/reservations.json";
-
-        private static List<ReservationModel> LoadReservations()
-        {
-            if (!System.IO.File.Exists(ReservationFilePath))
-                return new List<ReservationModel>();
-
-            var json = System.IO.File.ReadAllText(ReservationFilePath);
-            return JsonSerializer.Deserialize<List<ReservationModel>>(json) ?? new();
-        }
-
-        private static void SaveReservations(List<ReservationModel> reservations)
-        {
-            var json = JsonSerializer.Serialize(reservations, new JsonSerializerOptions { WriteIndented = true });
-            Directory.CreateDirectory(Path.GetDirectoryName(ReservationFilePath)!);
-            System.IO.File.WriteAllText(ReservationFilePath, json);
-        }
-
-        public HomeController(ILogger<HomeController> logger, ICarStatsService carStatsService)
+        public HomeController(ILogger<HomeController> logger, ICarStatsService carStatsService, IReservationService reservationService)
         {
             _logger = logger;
             _carStatsService = carStatsService;
+            _reservationService = reservationService;
         }
 
         public IActionResult Index()
@@ -119,9 +103,9 @@ namespace CarCollectionApp.Controllers
                 Timestamp = DateTime.Now
             };
 
-            var reservations = LoadReservations();
+            var reservations = _reservationService.GetAllReservations();
             reservations.Add(reservation);
-            SaveReservations(reservations);
+            _reservationService.AddReservation(reservation);
 
             ViewBag.Message = $"Reservation confirmed for {carName} from {pickup:MMM d} to {dropoff:MMM d} at {location}.";
             ViewBag.CarName = carName;
@@ -134,7 +118,7 @@ namespace CarCollectionApp.Controllers
         [HttpPost]
         public IActionResult EditReservation(long timestamp, string location, DateTime pickup, DateTime dropoff, string userNotes)
         {
-            var reservations = LoadReservations();
+            var reservations = _reservationService.GetAllReservations();
             var res = reservations.FirstOrDefault(r => r.Timestamp.Ticks == timestamp);
             if (res == null) return RedirectToAction("Reservations");
 
@@ -163,7 +147,7 @@ namespace CarCollectionApp.Controllers
             res.FinalPrice = total * (1 - discount);
             res.DiscountsApplied = discountNotes.Any() ? string.Join(" + ", discountNotes) : "None";
 
-            SaveReservations(reservations);
+            _reservationService.SaveReservations(reservations);
             TempData["Toast"] = "Reservation updated successfully!";
             return RedirectToAction("Reservations");
         }
@@ -171,12 +155,12 @@ namespace CarCollectionApp.Controllers
         [HttpPost]
         public IActionResult CancelReservation(long timestamp)
         {
-            var reservations = LoadReservations();
+            var reservations = _reservationService.GetAllReservations();
             var target = reservations.FirstOrDefault(r => r.Timestamp.Ticks == timestamp);
             if (target != null)
             {
                 reservations.Remove(target);
-                SaveReservations(reservations);
+                _reservationService.SaveReservations(reservations);
             }
 
             TempData["Toast"] = "Reservation canceled.";
@@ -185,7 +169,7 @@ namespace CarCollectionApp.Controllers
 
         public IActionResult Reservations(string? search, string? sort)
         {
-            var reservations = LoadReservations();
+            var reservations = _reservationService.GetAllReservations();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -206,7 +190,6 @@ namespace CarCollectionApp.Controllers
             ViewBag.Search = search;
             return View(reservations);
         }
-
 
         public IActionResult CarDetails(string? car)
         {
