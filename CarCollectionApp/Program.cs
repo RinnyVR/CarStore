@@ -1,36 +1,34 @@
+using CarCollectionApp.Models;
+using Microsoft.EntityFrameworkCore;
 using CarCollectionApp.Services;
-using Microsoft.EntityFrameworkCore; // Add this
-using CarCollectionApp.Models; // Add this
+using CarCollectionApp.Repositories; 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddDbContext<CarCollectionContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<ICarStatsService, CarStatsService>();
-builder.Services.AddDbContext<CarCollectionContext>(options => 
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sqlOption => sqlOption.EnableRetryOnFailure(
-            5, 
-            TimeSpan.FromSeconds(10),
-            null
-            )
-        )
-    );
+builder.Services.AddScoped<CarCollectionApp.Services.ICarStatsService, CarCollectionApp.Services.CarStatsService>();
+
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<IDealerService, DealerService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts(); // Enforce HTTPS in production
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // Serve static files from wwwroot
 app.UseRouting();
 app.UseAuthorization();
+app.UseStaticFiles();
 
 app.MapControllerRoute(
     name: "default",
