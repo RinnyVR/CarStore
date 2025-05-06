@@ -33,7 +33,17 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" asp-controller="Cars" asp-action="Index">Inventory</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="inventoryDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Inventory
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="inventoryDropdown">
+                            <a class="dropdown-item" asp-controller="Cars" asp-action="Index">Cars</a>
+                            <a class="dropdown-item" asp-controller="Dealers" asp-action="Index">Dealers</a>
+                            <a class="dropdown-item" asp-controller="Categories" asp-action="Index">Categories</a>
+                        </div>
+                    </li>
+
                     <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Home")">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="@Url.Action("Cars", "Home")">Cars</a></li>
                     <li class="nav-item"><a class="nav-link" href="@Url.Action("Compare", "Home")">Compare</a></li>
@@ -48,6 +58,7 @@
                         <div class="dropdown-menu" aria-labelledby="aboutDropdown">
                             <a class="dropdown-item" href="@Url.Action("About", "Home")">About</a>
                             <a class="dropdown-item" href="@Url.Action("Privacy", "Home")">Privacy</a>
+                    <a class="dropdown-item" asp-controller="Brands" asp-action="Index">Brands</a>
                     <a class="dropdown-item" asp-controller="Home" asp-action="Reservations">Reservations</a>
                             <!-- Optional for future -->
                             <!-- <a class="dropdown-item" href="@Url.Action("Terms", "Home")">Terms of Service</a> -->
