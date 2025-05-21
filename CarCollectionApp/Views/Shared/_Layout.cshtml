@@ -69,6 +69,11 @@
                     <li class="nav-item"><a class="nav-link" href="@Url.Action("Reviews", "Home")">Reviews</a></li>
                 </ul>
 
+                <!-- Login/Register or Logout/User -->
+                <div class="d-flex align-items-center ml-3">
+                    <partial name="_LoginPartial" />
+                </div>
+
                 <!-- Theme Toggle Button -->
                 <button id="theme-toggle" class="btn btn-outline-secondary btn-sm ml-2" title="Toggle Light/Dark Theme">
                     🌞 / 🌙
@@ -119,5 +124,6 @@
     </script>
 
     @RenderSection("Scripts", required: false)
+
 </body>
 </html>

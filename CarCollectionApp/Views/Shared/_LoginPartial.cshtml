@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = await UserManager.GetRolesAsync(user);
+    var role = roles.FirstOrDefault();
+
+    <div class="d-flex align-items-center">
+        <span class="text-dark mr-3">Hello, @UserManager.GetUserName(User)! <strong>(@role)</strong></span>
+
+        @* Admin-only dashboard link *@
+        @if (role == "Admin")
+        {
+            <a class="btn btn-sm btn-outline-warning mr-2" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
+        }
+
+        <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+            <button type="submit" class="btn btn-sm btn-primary">Logout</button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="d-flex align-items-center">
+        <a class="btn btn-sm btn-outline-primary mr-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="btn btn-sm btn-primary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </div>
+}

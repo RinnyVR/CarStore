@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using CarCollectionApp.Models;
 using CarCollectionApp.Services;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarCollectionApp.Controllers
 {
@@ -220,8 +221,18 @@ namespace CarCollectionApp.Controllers
 
         public IActionResult About() => View();
         public IActionResult Contact() => View();
-        public IActionResult Privacy() => View();
+        [Authorize(Roles = "Admin")]
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
         public IActionResult Reviews() => View(_reviews);
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
 
         [HttpPost]
         public IActionResult SubmitReview(string name, string reviewText, int rating)

@@ -34,6 +34,12 @@ namespace CarCollectionApp.Services
             _context.Brands.Update(brand);
             _context.SaveChanges();
         }
+        public string FormatBrandDisplayName(Brand brand)
+        {
+            if (brand == null) return "Unknown";
+            return $"{brand.Name} ({brand.Country})";
+        }
+
 
         public void DeleteBrand(int id)
         {

@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace CarCollectionApp.Models
 {
-    public class CarCollectionContext : DbContext
+    public class CarCollectionContext : IdentityDbContext<IdentityUser>
     {
         public CarCollectionContext(DbContextOptions<CarCollectionContext> options)
             : base(options)
