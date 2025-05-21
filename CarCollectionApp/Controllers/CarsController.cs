@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CarCollectionApp.Models;
-using CarCollectionApp.Services; 
+using CarCollectionApp.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarCollectionApp.Controllers
 {
@@ -22,6 +23,7 @@ namespace CarCollectionApp.Controllers
         }
 
         // GET: Cars
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string searchString, string sortOrder)
         {
             ViewData["CurrentFilter"] = searchString;
@@ -49,8 +51,8 @@ namespace CarCollectionApp.Controllers
             return View(await cars.ToListAsync());
         }
 
-
         // GET: Cars/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -68,13 +70,13 @@ namespace CarCollectionApp.Controllers
                 return NotFound();
             }
 
-            // ✅ Performance rating evaluation
             ViewBag.Performance = _carStatsService.EvaluatePerformance(car.Horsepower, car.Price);
 
             return View(car);
         }
 
         // GET: Cars/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
@@ -84,6 +86,7 @@ namespace CarCollectionApp.Controllers
 
         // POST: Cars/Create
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Model,Engine,Horsepower,Price,BrandId,CategoryId")] Car car)
         {
@@ -99,6 +102,7 @@ namespace CarCollectionApp.Controllers
         }
 
         // GET: Cars/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -118,6 +122,7 @@ namespace CarCollectionApp.Controllers
 
         // POST: Cars/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Model,Engine,Horsepower,Price,BrandId,CategoryId")] Car car)
         {
@@ -152,6 +157,7 @@ namespace CarCollectionApp.Controllers
         }
 
         // GET: Cars/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -173,6 +179,7 @@ namespace CarCollectionApp.Controllers
 
         // POST: Cars/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
